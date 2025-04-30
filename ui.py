@@ -50,13 +50,8 @@ def render_cycle_questions():
     return has_cycle
 
 def render_personalization_sidebar():
-<<<<<<< HEAD
-    st.sidebar.header("🌸 Personalization")
-    support_options = ["Nothing specific", "Hormonal balance", "Energy", "Digestive health", "Metabolism boost"]
-=======
     st.sidebar.header("Personal settings")
     support_options = ["Nothing specific", "Hormonal balance", "Energy", "Acne", "Digestive health", "Metabolism boost"]
->>>>>>> 2393f917 (Quick update)
     st.session_state.support_goal = st.sidebar.selectbox("What would you like support with? ℹ️", support_options)
 
     dietary_options = ["Vegan", "Vegetarian", "Nut allergy", "Gluten free", "Lactose intolerance"]
@@ -67,11 +62,7 @@ def render_personalization_sidebar():
 
 def render_personalization_summary():
     st.markdown("---")
-<<<<<<< HEAD
-    st.header("✅ Your Personalization Summary")
-=======
     st.header("Your Personalization Summary")
->>>>>>> 2393f917 (Quick update)
     st.markdown(f"**Cycle phase:** {st.session_state.phase}")
     st.markdown(f"**Support goal:** {st.session_state.support_goal}")
     if st.session_state.dietary_preferences:
