@@ -1,7 +1,11 @@
 # app.py
 import streamlit as st
 from utils import reset_session, load_llm_chain, add_to_chat_history
-from ui import render_personalization_sidebar, render_cycle_questions, render_personalization_summary
+from ui import (
+    render_personalization_sidebar,
+    render_cycle_questions,
+    render_personalization_summary,
+)
 
 # Initialize session state
 reset_session()
