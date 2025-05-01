@@ -70,18 +70,16 @@ def render_personalization_sidebar():
     if st.session_state.support_goal and st.session_state.dietary_preferences and st.session_state.phase:
         st.session_state.personalization_completed = True
 
-    # Suggested questions after personalization
-    if st.session_state.get("personalization_completed"):
-        st.markdown("---")
-        st.markdown("### 💬 Suggested questions you can ask:")
-        if st.button("🧬 What foods are best for my current cycle phase?"):
-            st.session_state.user_question = "What foods are best for my current cycle phase?"
-        if st.button("🌿 How can I support my hormones with food?"):
-            st.session_state.user_question = "How can I support my hormones with food?"
-        if st.button("🧼 Why is organic or clean eating important?"):
-            st.session_state.user_question = "Why is organic or clean eating important?"
-        if st.button(f"📆 How do I support the {st.session_state.phase} phase nutritionally?"):
-            st.session_state.user_question = f"How do I support the {st.session_state.phase} phase nutritionally?"
+def render_suggested_questions():
+    st.markdown("### 💬 Suggested questions you can ask:")
+    if st.button("🧬 What foods are best for my current cycle phase?", key="q1"):
+        st.session_state.user_question = "What foods are best for my current cycle phase?"
+    if st.button("🌿 How can I support my hormones with food?", key="q2"):
+        st.session_state.user_question = "How can I support my hormones with food?"
+    if st.button("🧼 Why is organic or clean eating important?", key="q3"):
+        st.session_state.user_question = "Why is organic or clean eating important?"
+    if st.button(f"📆 How do I support the {st.session_state.phase} phase nutritionally?", key="q4"):
+        st.session_state.user_question = f"How do I support the {st.session_state.phase} phase nutritionally?"
 
 def render_personalization_summary():
     st.markdown("---")
@@ -94,22 +92,5 @@ def render_personalization_summary():
         st.markdown("**Dietary preferences:** None")
     st.markdown("---")
 
-    # Suggested questions (main area)
     if st.session_state.get("personalization_completed"):
-        st.markdown("### 💬 Suggested questions you can ask:")
-        if st.button("🧬 What foods are best for my current cycle phase?"):
-            st.session_state.user_question = "What foods are best for my current cycle phase?"
-        if st.button("🌿 How can I support my hormones with food?"):
-            st.session_state.user_question = "How can I support my hormones with food?"
-        if st.button("🧼 Why is organic or clean eating important?"):
-            st.session_state.user_question = "Why is organic or clean eating important?"
-        if st.button(f"📆 How do I support the {st.session_state.phase} phase nutritionally?"):
-            st.session_state.user_question = f"How do I support the {st.session_state.phase} phase nutritionally?"
-    st.header("Your Personalization Summary")
-    st.markdown(f"**Cycle phase:** {st.session_state.phase}")
-    st.markdown(f"**Support goal:** {st.session_state.support_goal}")
-    if st.session_state.dietary_preferences:
-        st.markdown(f"**Dietary preferences:** {', '.join(st.session_state.dietary_preferences)}")
-    else:
-        st.markdown("**Dietary preferences:** None")
-    st.markdown("---")
+        render_suggested_questions()
