@@ -92,6 +92,3 @@ def render_personalization_summary():
     else:
         st.markdown("**Dietary preferences:** None")
     st.markdown("---")
-
-    if st.session_state.get("personalization_completed"):
-        render_suggested_questions()
