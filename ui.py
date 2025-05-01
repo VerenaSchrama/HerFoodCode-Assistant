@@ -56,6 +56,19 @@ def render_cycle_questions():
         st.success(f"You selected: **{phase_override}** phase manually.")
         st.session_state.personalization_completed = True
 
+    # Suggested questions after personalization
+    if st.session_state.get("personalization_completed"):
+        st.markdown("---")
+        st.markdown("### 💬 Suggested questions you can ask:")
+        if st.button("🧬 What foods are best for my current cycle phase?"):
+            st.session_state.user_question = "What foods are best for my current cycle phase?"
+        if st.button("🌿 How can I support my hormones with food?"):
+            st.session_state.user_question = "How can I support my hormones with food?"
+        if st.button("🧼 Why is organic or clean eating important?"):
+            st.session_state.user_question = "Why is organic or clean eating important?"
+        if st.button(f"📆 How do I support the {st.session_state.phase} phase nutritionally?"):
+            st.session_state.user_question = f"How do I support the {st.session_state.phase} phase nutritionally?"
+
     return has_cycle
 
 def render_personalization_sidebar():
