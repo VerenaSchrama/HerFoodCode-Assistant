@@ -5,7 +5,7 @@ def render_cycle_questions():
     has_cycle = st.radio("Do you have a (regular) menstrual cycle?", ("Yes", "No"))
 
     # Optional manual override
-    phase_override = st.selectbox("⬇️ Or manually select your cycle phase", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
+    phase_override = st.selectbox("Choose your current cycle phase manually ⬇️", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
 
     if has_cycle == "Yes":
         today = datetime.now().date()
@@ -49,6 +49,12 @@ def render_cycle_questions():
                 st.session_state.cycle_length = 28
             st.success(f"Selected: {pseudo_choice}")
             st.session_state.personalization_completed = True
+
+    # Manual override sets phase regardless of other conditions
+    if phase_override and phase_override in ["Menstrual", "Follicular", "Ovulatory", "Luteal"]:
+        st.session_state.phase = phase_override
+        st.success(f"You selected: **{phase_override}** phase manually.")
+        st.session_state.personalization_completed = True
 
     return has_cycle
 
