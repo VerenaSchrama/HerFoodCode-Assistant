@@ -1,9 +1,11 @@
-# ui.py
 import streamlit as st
 from datetime import datetime
 
 def render_cycle_questions():
     has_cycle = st.radio("Do you have a (regular) menstrual cycle?", ("Yes", "No"))
+
+    # Optional manual override
+    phase_override = st.selectbox("⬇️ Or manually select your cycle phase", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
 
     if has_cycle == "Yes":
         today = datetime.now().date()
@@ -23,14 +25,15 @@ def render_cycle_questions():
                     days_since_last = (today - st.session_state.last_period).days
 
                     if days_since_last <= 5:
-                        st.session_state.phase = "Menstrual"
+                        detected_phase = "Menstrual"
                     elif days_since_last <= 14:
-                        st.session_state.phase = "Follicular"
+                        detected_phase = "Follicular"
                     elif days_since_last <= 21:
-                        st.session_state.phase = "Ovulatory"
+                        detected_phase = "Ovulatory"
                     else:
-                        st.session_state.phase = "Luteal"
+                        detected_phase = "Luteal"
 
+                    st.session_state.phase = phase_override if phase_override else detected_phase
                     st.success(f"Based on your data, you are likely in the **{st.session_state.phase}** phase.")
                     st.session_state.personalization_completed = True
 
