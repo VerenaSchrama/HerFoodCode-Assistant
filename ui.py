@@ -19,7 +19,7 @@ def render_cycle_questions():
             if st.session_state.last_period != today and st.session_state.second_last_period != today:
                 cycle_length = (st.session_state.last_period - st.session_state.second_last_period).days
                 if cycle_length <= 10:
-                    st.error("Your periods seem too close together. Please check the entered dates.")
+                    st.error("Your periods seem close together. Please check the entered dates.")
                 else:
                     st.session_state.cycle_length = cycle_length
                     days_since_last = (today - st.session_state.last_period).days
@@ -34,11 +34,12 @@ def render_cycle_questions():
                         detected_phase = "Luteal"
 
                     st.session_state.phase = phase_override if phase_override else detected_phase
-                    st.success(f"Based on your data, you are likely in the **{st.session_state.phase}** phase.")
+                    if not phase_override:
+                        st.success(f"Based on your data, you are likely in the **{st.session_state.phase}** phase.")
                     st.session_state.personalization_completed = True
 
     else:
-        st.subheader("🚫 No active menstrual cycle detected.")
+        st.subheader("No active menstrual cycle detected.")
         pseudo_choice = st.radio("Would you like:", ("🌿 Get general energetic advice", "🌙 Start with a pseudo-cycle based on a 28-day rhythm"))
 
         if pseudo_choice:
@@ -56,19 +57,6 @@ def render_cycle_questions():
         st.success(f"You selected: **{phase_override}** phase manually.")
         st.session_state.personalization_completed = True
 
-    # Suggested questions after personalization
-    if st.session_state.get("personalization_completed"):
-        st.markdown("---")
-        st.markdown("### 💬 Suggested questions you can ask:")
-        if st.button("🧬 What foods are best for my current cycle phase?"):
-            st.session_state.user_question = "What foods are best for my current cycle phase?"
-        if st.button("🌿 How can I support my hormones with food?"):
-            st.session_state.user_question = "How can I support my hormones with food?"
-        if st.button("🧼 Why is organic or clean eating important?"):
-            st.session_state.user_question = "Why is organic or clean eating important?"
-        if st.button(f"📆 How do I support the {st.session_state.phase} phase nutritionally?"):
-            st.session_state.user_question = f"How do I support the {st.session_state.phase} phase nutritionally?"
-
     return has_cycle
 
 def render_personalization_sidebar():
@@ -79,8 +67,21 @@ def render_personalization_sidebar():
     dietary_options = ["Vegan", "Vegetarian", "Nut allergy", "Gluten free", "Lactose intolerance"]
     st.session_state.dietary_preferences = st.sidebar.multiselect("Do you follow any dietary guidelines? ℹ️", dietary_options)
 
-    if st.session_state.support_goal and st.session_state.dietary_preferences:
+    if st.session_state.support_goal and st.session_state.dietary_preferences and st.session_state.phase:
         st.session_state.personalization_completed = True
+
+    # Suggested questions after personalization
+    if st.session_state.get("personalization_completed"):
+        st.markdown("---")
+        st.markdown("### Suggested questions you can ask:")
+        if st.button("What foods are best for my current cycle phase?"):
+            st.session_state.user_question = "What foods are best for my current cycle phase?"
+        if st.button("How can I support my hormones with food?"):
+            st.session_state.user_question = "How can I support my hormones with food?"
+        if st.button("Why is organic or clean eating important for hormonal balance?"):
+            st.session_state.user_question = "Why is organic or clean eating important?"
+        if st.button(f"How do I support the {st.session_state.phase} phase with food?"):
+            st.session_state.user_question = f"How do I support the {st.session_state.phase} phase with food?"
 
 def render_personalization_summary():
     st.markdown("---")
