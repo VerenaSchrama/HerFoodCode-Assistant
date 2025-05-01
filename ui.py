@@ -72,14 +72,15 @@ def render_personalization_sidebar():
 
 def render_suggested_questions():
     st.markdown("### 💬 Suggested questions you can ask:")
-    if st.button("🧬 What foods are best for my current cycle phase?", key="q1"):
-        st.session_state.user_question = "What foods are best for my current cycle phase?"
-    if st.button("🌿 How can I support my hormones with food?", key="q2"):
-        st.session_state.user_question = "How can I support my hormones with food?"
-    if st.button("🧼 Why is organic or clean eating important?", key="q3"):
-        st.session_state.user_question = "Why is organic or clean eating important?"
-    if st.button(f"📆 How do I support the {st.session_state.phase} phase nutritionally?", key="q4"):
-        st.session_state.user_question = f"How do I support the {st.session_state.phase} phase nutritionally?"
+    questions = [
+        ("🧬 What foods are best for my current cycle phase?", "q1"),
+        ("🌿 How can I support my hormones with food?", "q2"),
+        ("🧼 Why is organic or clean eating important?", "q3"),
+        (f"📆 How do I support the {st.session_state.phase} phase nutritionally?", "q4")
+    ]
+    for label, key in questions:
+        if st.button(label, key=key):
+            st.session_state.user_question = label.split(" ", 1)[1]
 
 def render_personalization_summary():
     st.markdown("---")
