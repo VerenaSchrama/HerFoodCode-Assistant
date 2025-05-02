@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 from utils import reset_session, load_llm_chain, add_to_chat_history
 from ui import (
@@ -23,8 +22,14 @@ if st.session_state.personalization_completed:
     render_personalization_summary()
 
     user_question = st.chat_input("Ask something like: 'What should I eat in my luteal phase?'")
+
+    # Check if a suggested question was triggered
+    if st.session_state.get("question_triggered") and st.session_state.get("user_question"):
+        user_question = st.session_state.user_question
+        st.session_state.question_triggered = False  # Reset trigger
+
     if user_question:
-        st.write(f"🧠 Thinking based on your cycle phase ({st.session_state.phase}) and dietary needs...")
+        st.write(f"\U0001F9E0 Thinking based on your cycle phase ({st.session_state.phase}) and dietary needs...")
 
         qa_chain = load_llm_chain()
 
@@ -39,17 +44,13 @@ if st.session_state.personalization_completed:
         add_to_chat_history("assistant", response)
 
     st.markdown("---")
-    st.subheader("📝 Chat History")
+    st.subheader("\U0001F4DD Chat History")
 
     if st.session_state.chat_history:
         for speaker, message in st.session_state.chat_history:
-            if speaker == "user":
-                with st.chat_message("user"):
-                    st.markdown(message)
-            elif speaker == "assistant":
-                with st.chat_message("assistant"):
-                    st.markdown(message)
+            with st.chat_message(speaker):
+                st.markdown(message)
     else:
         st.info("No chat history yet. Start by asking a question!")
 else:
-    st.info("✨ Please complete the personalization steps above before asking questions.")
+    st.info("\u2728 Please complete the personalization steps above before asking questions.")
