@@ -81,6 +81,7 @@ def render_suggested_questions():
     for label, key in questions:
         if st.button(label, key=key):
             st.session_state.user_question = label.split(" ", 1)[1]
+            st.rerun()
 
 def render_personalization_summary():
     st.markdown("---")
