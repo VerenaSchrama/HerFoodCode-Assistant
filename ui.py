@@ -2,10 +2,14 @@ import streamlit as st
 from datetime import datetime
 
 def render_cycle_questions():
-    has_cycle = st.radio("Do you have a (regular) menstrual cycle?", ("Yes", "No"))
-
-    # Optional manual override
+    # Manual override first
     phase_override = st.selectbox("Choose your current cycle phase manually ⬇️", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
+
+    # Add divider/intro for auto detection
+    st.markdown("---")
+    st.markdown("Or let me help you to find your current phase:")
+
+    has_cycle = st.radio("Do you have a (regular) menstrual cycle?", ("Yes", "No"))
 
     if has_cycle == "Yes":
         today = datetime.now().date()
@@ -51,7 +55,7 @@ def render_cycle_questions():
             st.success(f"Selected: {pseudo_choice}")
             st.session_state.personalization_completed = True
 
-    # Manual override sets phase regardless of other conditions
+    # Manual override always takes precedence if selected
     if phase_override and phase_override in ["Menstrual", "Follicular", "Ovulatory", "Luteal"]:
         st.session_state.phase = phase_override
         st.success(f"You selected: **{phase_override}** phase manually.")
@@ -97,3 +101,4 @@ def render_personalization_summary():
 
     # Show example questions here
     render_suggested_questions()
+
