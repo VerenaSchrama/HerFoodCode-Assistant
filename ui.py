@@ -5,31 +5,35 @@ from datetime import datetime
 st.markdown(
     """
     <style>
+        .main {
+            background-color: #fdf6f0 !important;
+            color: #3e3e3e !important;
+        }
         .stApp {
-            background-color: #fdf6f0;
+            background-color: #fdf6f0 !important;
         }
-        h1, h2, h3, h4 {
-            color: #4a2c2a;
+        header, footer, .css-1rs6os {
+            background-color: transparent !important;
         }
-        .stMarkdown, .stText {
-            color: #3e3e3e;
+        h1, h2, h3, h4, h5, h6 {
+            color: #4a2c2a !important;
         }
-        div.stButton > button {
-            background-color: #e07a5f;
-            color: white;
-            border: none;
-            padding: 0.5em 1em;
-            border-radius: 8px;
-            font-weight: 600;
+        .stButton>button {
+            background-color: #e07a5f !important;
+            color: white !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            padding: 0.5em 1em !important;
+            border: none !important;
         }
-        div.stButton > button:hover {
-            background-color: #d65a3f;
-            color: #fff;
+        .stButton>button:hover {
+            background-color: #d65a3f !important;
         }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 def render_cycle_questions():
     # Manual override first
