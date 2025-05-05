@@ -1,6 +1,36 @@
 import streamlit as st
 from datetime import datetime
 
+# Custom global styling
+st.markdown(
+    """
+    <style>
+        .stApp {
+            background-color: #fdf6f0;
+        }
+        h1, h2, h3, h4 {
+            color: #4a2c2a;
+        }
+        .stMarkdown, .stText {
+            color: #3e3e3e;
+        }
+        div.stButton > button {
+            background-color: #e07a5f;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        div.stButton > button:hover {
+            background-color: #d65a3f;
+            color: #fff;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 def render_cycle_questions():
     # Manual override first
     st.markdown("#### Option 1: Choose your current cycle phase manually ⬇️")
