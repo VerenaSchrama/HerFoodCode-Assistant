@@ -10,7 +10,7 @@ from ui import (
 reset_session()
 
 st.title("Your Cycle Nutrition Assistant")
-st.markdown("Ask your hormonal, PCOS & food questions to science.")
+st.markdown("### *Ask your hormonal, PCOS & food questions to science.*")
 st.write("Let's personalize your experience first before you ask questions.")
 
 # Personalization flow
