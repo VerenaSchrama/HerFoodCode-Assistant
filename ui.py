@@ -3,11 +3,11 @@ from datetime import datetime
 
 def render_cycle_questions():
     # Manual override first
-    phase_override = st.selectbox("### Option 1: Choose your current cycle phase manually ⬇️", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
+    phase_override = st.selectbox("#### Option 1: Choose your current cycle phase manually ⬇️", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
 
     # Add divider/intro for auto detection
     st.markdown("---")
-    st.markdown("### Option 2: Or let me help you to find your current phase:")
+    st.markdown("#### Option 2: Or let me help you to find your current phase:")
 
     has_cycle = st.radio("Do you have a (regular) menstrual cycle?", ("Yes", "No"))
 
