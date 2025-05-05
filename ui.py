@@ -7,7 +7,7 @@ def render_cycle_questions():
 
     # Add divider/intro for auto detection
     st.markdown("---")
-    st.markdown("Option 2: Or let me help you to find your current phase:")
+    st.markdown("### Option 2: Or let me help you to find your current phase:")
 
     has_cycle = st.radio("Do you have a (regular) menstrual cycle?", ("Yes", "No"))
 
