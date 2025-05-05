@@ -43,8 +43,8 @@ def render_cycle_questions():
                     st.session_state.personalization_completed = True
 
     else:
-        st.subheader("🚫 No active menstrual cycle detected.")
-        pseudo_choice = st.radio("Would you like:", ("🌿 Get general energetic advice", "🌙 Start with a pseudo-cycle based on a 28-day rhythm"))
+        st.subheader("No active menstrual cycle detected.")
+        pseudo_choice = st.radio("Would you like:", ("Get general energetic advice", "Start with a pseudo-cycle based on a 28-day rhythm"))
 
         if pseudo_choice:
             if pseudo_choice == "🌿 Get general energetic advice":
@@ -78,9 +78,9 @@ def render_suggested_questions():
     st.markdown("### 💬 Suggested questions you can ask:")
     questions = [
         ("What foods are best for my current cycle phase?", "suggestion_q1"),
-        ("How can I support my hormones with food?", "suggestion_q2"),
-        ("Why is organic or clean eating important?", "suggestion_q3"),
-        (f"How do I support the {st.session_state.phase} phase nutritionally?", "suggestion_q4")
+        ("Give me a 3-day breakfast plan", "suggestion_q2"),
+        ("Why is organic food important for my cycle?", "suggestion_q3"),
+        (f"What nutritional seeds support my {st.session_state.phase} phase (seed syncing)?", "suggestion_q4")
     ]
     for question, key in questions:
         if st.button(question, key=key):
