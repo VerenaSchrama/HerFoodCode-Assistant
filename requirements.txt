@@ -153,3 +153,4 @@ openai
 python-dotenv
 chromadb
 tiktoken
+supabase
