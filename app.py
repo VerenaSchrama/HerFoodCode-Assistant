@@ -1,5 +1,5 @@
 import streamlit as st
-from supabase import create_client
+from supabase import create_client, Client
 from datetime import datetime
 import os
 from dotenv import load_dotenv
@@ -26,7 +26,7 @@ authenticator = Authenticate(names, usernames, passwords, "cookie_name", "signat
 name, auth_status, username = authenticator.login("Login", "main")
 
 if auth_status:
-    st.success(f"Welcome {name}! 👋")
+    st.success(f"Welcome {name}!")
     user_id = username
 
     reset_session()
