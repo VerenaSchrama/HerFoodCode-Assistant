@@ -22,7 +22,14 @@ from streamlit_authenticator import Authenticate
 names = ["Demo User"]
 usernames = ["demo"]
 passwords = ["demo"]
-authenticator = Authenticate(names, usernames, passwords, "cookie_name", "signature_key", cookie_expiry_days=30)
+authenticator = Authenticate(
+    names=names,
+    usernames=usernames,
+    passwords=passwords,
+    cookie_name="your_cookie_name",
+    key="some_random_key",
+    cookie_expiry_days=30
+)
 name, auth_status, username = authenticator.login("Login", "main")
 
 if auth_status:
