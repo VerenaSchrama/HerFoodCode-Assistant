@@ -18,25 +18,37 @@ SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # --- Simple demo authentication (replace with real auth for production) ---
-from streamlit_authenticator import Authenticate
-names = ["Demo User"]
-usernames = ["demo"]
-passwords = ["demo"]
-authenticator = Authenticate(
-    names=names,
-    usernames=usernames,
-    passwords=passwords,
-    cookie_name="your_cookie_name",
-    key="some_random_key",
+import streamlit_authenticator as stauth
+
+# Define user credentials as a dictionary
+credentials = {
+    "usernames": {
+        "demo": {
+            "name": "Demo User",
+            "password": "demo"  # Use a hashed password in production
+        }
+    }
+}
+
+# Create the authenticator instance
+authenticator = stauth.Authenticate(
+    credentials,
+    "herfoodcode_cookie",        # Cookie name
+    "herfoodcode_signature",     # Signature key for security
     cookie_expiry_days=30
 )
+
+# Render the login interface
 name, auth_status, username = authenticator.login("Login", "main")
 
+# Post-login behavior
 if auth_status:
-    st.success(f"Welcome {name}!")
-    user_id = username
+    st.success(f"Welcome, {name}!")
+elif auth_status is False:
+    st.error("Username or password is incorrect")
+elif auth_status is None:
+    st.warning("Please enter your username and password")
 
-    reset_session()
 
     # Load or initialize profile
     user_data = supabase.table("profiles").select("*").eq("user_id", user_id).execute()
