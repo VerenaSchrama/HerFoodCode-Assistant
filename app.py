@@ -51,9 +51,9 @@ elif auth_status is None:
 
 
     # Load or initialize profile
-    user_data = supabase.table("profiles").select("*").eq("user_id", user_id).execute()
+    user_data = supabase.table("profiles").select("*").eq("user_id", username).execute()
     if not user_data.data:
-        supabase.table("profiles").insert({"user_id": user_id, "phase": "", "goal": "", "diet": []}).execute()
+        supabase.table("profiles").insert({"user_id": username, "phase": "", "goal": "", "diet": []}).execute()
         st.info("New profile created. Please personalize your settings.")
     else:
         profile = user_data.data[0]
