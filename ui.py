@@ -100,7 +100,7 @@ def render_cycle_questions():
 
 def render_personalization_sidebar():
     st.sidebar.header("Personal settings")
-    support_options = ["Nothing specific", "Hormonal balance", "Energy", "Acne", "Digestive health", "Metabolism boost"]
+    support_options = ["Nothing specific", "Hormonal balance and regular cycle", "Getting back my period", "More energy", "Acne", "Eat more nutritious in general", "Digestive health/ Metabolism boost"]
     st.session_state.support_goal = st.sidebar.selectbox("What would you like support with? ℹ️", support_options)
 
     dietary_options = ["Vegan", "Vegetarian", "Nut allergy", "Gluten free", "Lactose intolerance"]
@@ -113,9 +113,10 @@ def render_suggested_questions():
     st.markdown("### 💬 Suggested questions you can ask:")
     questions = [
         ("What foods are best for my current cycle phase?", "suggestion_q1"),
-        ("Give me a 3-day breakfast plan", "suggestion_q2"),
-        ("Why is organic food important for my cycle?", "suggestion_q3"),
-        (f"What nutritional seeds support my {st.session_state.phase} phase (seed syncing)?", "suggestion_q4")
+        ("Give me an overview of the 4 cycles and the foods I should eat for my goal.", "suggestion_q2"),
+        ("Give me a 3-day breakfast plan", "suggestion_q3"),
+        ("Why is organic food important for my cycle?", "suggestion_q4"),
+        (f"What nutritional seeds support my {st.session_state.phase} phase (seed syncing)?", "suggestion_q5")
     ]
     for question, key in questions:
         if st.button(question, key=key):
