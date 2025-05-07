@@ -19,7 +19,12 @@ SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # --- Authentication ---
-if not st.session_state.get("logged_in"):
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "personalization_completed" not in st.session_state:
+    st.session_state.personalization_completed = False
+
+if not st.session_state.logged_in:
     st.title("Your Cycle Nutrition Assistant")
     st.markdown("_Ask your hormonal, PCOS & food questions to science._")
 
@@ -69,6 +74,7 @@ if st.sidebar.button("💾 Save Settings"):
         "goal": st.session_state.support_goal,
         "diet": st.session_state.dietary_preferences
     }).eq("user_id", st.session_state.user_id).execute()
+    st.session_state.personalization_completed = True
     st.sidebar.success("Preferences saved!")
 
 # --- Chat interface ---
@@ -104,5 +110,3 @@ if st.session_state.personalization_completed:
         st.chat_message("assistant").markdown(msg["response"])
 else:
     st.info("✨ Please complete the personalization steps above before asking questions.")
-
-
