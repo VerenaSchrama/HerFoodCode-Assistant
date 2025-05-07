@@ -10,6 +10,7 @@ from ui import (
     render_personalization_summary,
 )
 from utils import reset_session, load_llm_chain, add_to_chat_history
+from supabase_auth import register_user, login_user
 
 # Load environment variables
 load_dotenv()
@@ -17,101 +18,91 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# --- Simple demo authentication (replace with real auth for production) ---
-import streamlit_authenticator as stauth
+# ------------------- Login/Register UI -------------------
+st.title("Your Cycle Nutrition Assistant")
+st.write("*Ask your hormonal, PCOS & food questions to science.*")
 
-# Define user credentials as a dictionary
-credentials = {
-    "usernames": {
-        "demo": {
-            "name": "Demo User",
-            "password": "demo"  # Use a hashed password in production
-        }
-    }
-}
+auth_mode = st.radio("Do you want to log in or register?", ["Login", "Register"])
 
-# Create the authenticator instance
-authenticator = stauth.Authenticate(
-    credentials,
-    "herfoodcode_cookie",        # Cookie name
-    "herfoodcode_signature",     # Signature key for security
-    cookie_expiry_days=30
-)
+email = st.text_input("Email")
+password = st.text_input("Password", type="password")
 
-# Render the login interface
-name, auth_status, username = authenticator.login("Login", "main")
+if auth_mode == "Register":
+    if st.button("Register"):
+        success, msg = register_user(email, password)
+        st.success(msg) if success else st.error(msg)
+elif auth_mode == "Login":
+    if st.button("Login"):
+        success, user_id, msg = login_user(email, password)
+        if success:
+            st.session_state.user_id = user_id
+            st.session_state.logged_in = True
+            st.success(msg)
+        else:
+            st.error(msg)
 
-# Post-login behavior
-if auth_status:
-    st.success(f"Welcome, {name}!")
-elif auth_status is False:
-    st.error("Username or password is incorrect")
-elif auth_status is None:
-    st.warning("Please enter your username and password")
+if not st.session_state.get("logged_in"):
+    st.stop()
 
+# ------------------- Load Profile -------------------
+user_data = supabase.table("profiles").select("*").eq("user_id", st.session_state.user_id).execute()
 
-    # Load or initialize profile
-    user_data = supabase.table("profiles").select("*").eq("user_id", username).execute()
-    if not user_data.data:
-        supabase.table("profiles").insert({"user_id": username, "phase": "", "goal": "", "diet": []}).execute()
-        st.info("New profile created. Please personalize your settings.")
-    else:
-        profile = user_data.data[0]
-        st.session_state.phase = profile.get("phase", "")
-        st.session_state.support_goal = profile.get("goal", "")
-        st.session_state.dietary_preferences = profile.get("diet", [])
+if not user_data.data:
+    supabase.table("profiles").insert({
+        "user_id": st.session_state.user_id,
+        "phase": "",
+        "goal": "",
+        "diet": []
+    }).execute()
+    st.info("New profile created. Please personalize your settings.")
+else:
+    profile = user_data.data[0]
+    st.session_state.phase = profile.get("phase", "")
+    st.session_state.support_goal = profile.get("goal", "")
+    st.session_state.dietary_preferences = profile.get("diet", [])
 
-    st.title("Your Cycle Nutrition Assistant")
-    st.write("*Ask your hormonal, PCOS & food questions to science.*")
+# ------------------- Personalization -------------------
+has_cycle = render_cycle_questions()
+render_personalization_sidebar()
 
-    # --- Personalization ---
-    has_cycle = render_cycle_questions()
-    render_personalization_sidebar()
+if st.sidebar.button("\U0001F4BE Save Settings"):
+    supabase.table("profiles").update({
+        "phase": st.session_state.phase,
+        "goal": st.session_state.support_goal,
+        "diet": st.session_state.dietary_preferences
+    }).eq("user_id", st.session_state.user_id).execute()
+    st.sidebar.success("Preferences saved!")
 
-    if st.sidebar.button("💾 Save Settings"):
-        supabase.table("profiles").update({
+# ------------------- Chat Interface -------------------
+if st.session_state.personalization_completed:
+    render_personalization_summary()
+
+    user_question = st.chat_input("Ask something like: 'What should I eat in my luteal phase?'")
+    if user_question:
+        qa_chain = load_llm_chain()
+        response = qa_chain.run({
             "phase": st.session_state.phase,
             "goal": st.session_state.support_goal,
-            "diet": st.session_state.dietary_preferences
-        }).eq("user_id", user_id).execute()
-        st.sidebar.success("Preferences saved!")
+            "diet": ", ".join(st.session_state.dietary_preferences),
+            "question": user_question
+        })
 
-    # --- Chat interface ---
-    if st.session_state.personalization_completed:
-        render_personalization_summary()
+        supabase.table("chat_history").insert({
+            "user_id": st.session_state.user_id,
+            "timestamp": datetime.utcnow().isoformat(),
+            "question": user_question,
+            "response": response
+        }).execute()
 
-        user_question = st.chat_input("Ask something like: 'What should I eat in my luteal phase?'")
-        if user_question:
-            qa_chain = load_llm_chain()
-            response = qa_chain.run({
-                "phase": st.session_state.phase,
-                "goal": st.session_state.support_goal,
-                "diet": ", ".join(st.session_state.dietary_preferences),
-                "question": user_question
-            })
+        add_to_chat_history("user", user_question)
+        add_to_chat_history("assistant", response)
 
-            supabase.table("chat_history").insert({
-                "user_id": user_id,
-                "timestamp": datetime.utcnow().isoformat(),
-                "question": user_question,
-                "response": response
-            }).execute()
+    st.markdown("---")
+    st.subheader("\U0001F553 Chat History")
 
-            add_to_chat_history("user", user_question)
-            add_to_chat_history("assistant", response)
-
-        st.markdown("---")
-        st.subheader("🕓 Chat History")
-
-        history = supabase.table("chat_history").select("*").eq("user_id", user_id).order("timestamp", desc=True).limit(5).execute()
-        for msg in reversed(history.data):
-            st.chat_message("user").markdown(msg["question"])
-            st.chat_message("assistant").markdown(msg["response"])
-
-    else:
-        st.info("✨ Please complete the personalization steps above before asking questions.")
-
-elif auth_status is False:
-    st.error("Incorrect username or password")
-elif auth_status is None:
-    st.warning("Please enter your credentials")
+    history = supabase.table("chat_history").select("*").eq("user_id", st.session_state.user_id).order("timestamp", desc=True).limit(5).execute()
+    for msg in reversed(history.data):
+        st.chat_message("user").markdown(msg["question"])
+        st.chat_message("assistant").markdown(msg["response"])
+else:
+    st.info("\u2728 Please complete the personalization steps above before asking questions.")
