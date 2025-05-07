@@ -37,7 +37,7 @@ if not st.session_state.get("logged_in"):
             if success:
                 st.session_state.user_id = user_data["id"]
                 st.session_state.logged_in = True
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error(f"Login error: {msg}")
 
@@ -104,4 +104,5 @@ if st.session_state.personalization_completed:
         st.chat_message("assistant").markdown(msg["response"])
 else:
     st.info("✨ Please complete the personalization steps above before asking questions.")
+
 
