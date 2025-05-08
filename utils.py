@@ -1,6 +1,7 @@
 # utils.py
 import openai
 import streamlit as st
+
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate

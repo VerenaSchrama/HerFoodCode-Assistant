@@ -28,7 +28,7 @@ if not st.session_state.logged_in:
     st.title("Your Cycle Nutrition Assistant")
     st.markdown("_Ask your hormonal, PCOS & food questions to science._")
 
-    auth_mode = st.radio("Do you want to log in or register?", ["Login", "Register"])
+    auth_mode = st.radio("Do you want to log in or register (for first timer's)?", ["Login", "Register"])
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
 
